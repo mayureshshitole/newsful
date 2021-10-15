@@ -13,7 +13,7 @@ const Finance = ({ finNews }) => {
         <meta name="description" content="Bedhadak News website" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-    < section className="mt-5mx-auto px-1  sm:p-5 min-h-screen">
+    < section className="mt-5 mx-auto px-1  sm:p-5 min-h-screen">
       <div>
         {finNews.bedhadaknewsApi.map((newsItem, index) => (
           <div
