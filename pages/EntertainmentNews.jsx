@@ -77,7 +77,7 @@ export async function getStaticProps() {
   return {
     props: {
       entNews,
-      revalidate: 60
     },
+    revalidate: 60
   };
 }

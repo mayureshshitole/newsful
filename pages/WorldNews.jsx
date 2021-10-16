@@ -77,7 +77,7 @@ export async function getStaticProps() {
   return {
     props: {
       wdNews,
-      revalidate: 60
     },
+    revalidate: 60
   };
 }

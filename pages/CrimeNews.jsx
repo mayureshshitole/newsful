@@ -12,7 +12,7 @@ const CrimeNews = ({ criNews }) => {
         <meta name="description" content="Bedhadak News website" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      < section className="mt-5 mx-auto px-1  sm:p-5 min-h-screen">
+      <section className="mt-5 mx-auto px-1  sm:p-5 min-h-screen">
         <div>
           {criNews.bedhadaknewsApi.map((newsItem, index) => (
             <div
@@ -77,7 +77,7 @@ export async function getStaticProps() {
   return {
     props: {
       criNews,
-      revalidate: 60
     },
+    revalidate: 60,
   };
 }
