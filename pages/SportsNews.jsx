@@ -77,6 +77,7 @@ export async function getStaticProps() {
   return {
     props: {
       spNews,
+      revalidate: 60
     },
   };
 }

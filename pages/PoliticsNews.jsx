@@ -76,6 +76,7 @@ export async function getStaticProps() {
   return {
     props: {
       poliNews,
+      revalidate: 60
     },
   };
 }
