@@ -1,7 +1,7 @@
 export default async (req, res) => {
     const GC_API = "https://api-ap-northeast-1.graphcms.com/v2/ckuk42wtt28wy01z04r2b4h1y/master";
     const CrimeNews = `query {
-        bedhadaknewsApi(where: { category: crime }) {
+        bedhadaknewsApi(where: { category: crime },orderBy: createdAt_DESC) {
           title
           publisherName
           newsPageUrl
