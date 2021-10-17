@@ -1,20 +1,47 @@
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
-import client from "../apolloClient";
-import { gql } from "@apollo/client";
+import useSWR from "swr";
 
-const CrimeNews = ({ criNews }) => {
+const fetcher = (url) => fetch(url).then((res) => res.json());
+
+const CrimeNews = () => {
+  const { data, error } = useSWR("/api/crimenews", fetcher);
+  if (error)
+    return (
+      <div className="min-h-screen text-center text-red-600 flex justify-center items-center">
+        <h1 className="tracking-wider text-xl font-extrabold">
+          An Error Occurred, we are trying to resolve that
+        </h1>
+      </div>
+    );
+
+  if (!data)
+    return (
+      <div className="min-h-screen text-center text-white flex justify-center items-center">
+        <h1 className="tracking-wider text-xl font-extrabold">
+          There is no crime news today
+        </h1>
+      </div>
+    );
+  if (!data.length)
+    return (
+      <div className="min-h-screen text-center text-white flex justify-center items-center">
+        <h1 className="tracking-wider text-xl font-extrabold">
+          There is no crime news today
+        </h1>
+      </div>
+    );
   return (
     <>
       <Head>
         <title>Crime News, Newsful- Raw.Real.Unbiased</title>
-        <meta name="description" content="Bedhadak News website" />
+        <meta name="description" content="Newsful is the Indias first news aggregator website where you will find best news that are reliable, true, fearless, unbiased. We connects truly genuine journalist to you and keeps you away from fake news." />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <section className="mt-5 mx-auto px-1  sm:p-5 min-h-screen">
         <div>
-          {criNews.bedhadaknewsApi.map((newsItem, index) => (
+          {data.map((newsItem, index) => (
             <div
               key={index}
               className="p-2 bg-white shadow-lg group rounded-lg border border-gray-200  "
@@ -56,28 +83,28 @@ const CrimeNews = ({ criNews }) => {
 
 export default CrimeNews;
 
-export async function getStaticProps() {
-  const { data: criNews } = await client.query({
-    query: gql`
-      query {
-        bedhadaknewsApi(where: { category: crime }) {
-          title
-          publisherName
-          newsPageUrl
-          shortdescription
-          newsDate
-          featuredimage {
-            url
-          }
-        }
-      }
-    `,
-  });
+// export async function getStaticProps() {
+//   const { data: criNews } = await client.query({
+//     query: gql`
+//       query {
+//         bedhadaknewsApi(where: { category: crime }) {
+//           title
+//           publisherName
+//           newsPageUrl
+//           shortdescription
+//           newsDate
+//           featuredimage {
+//             url
+//           }
+//         }
+//       }
+//     `,
+//   });
 
-  return {
-    props: {
-      criNews,
-    },
-    revalidate: 60,
-  };
-}
+//   return {
+//     props: {
+//       criNews,
+//     },
+//     revalidate: 60,
+//   };
+// }

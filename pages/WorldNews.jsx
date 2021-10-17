@@ -1,15 +1,43 @@
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
-import client from "../apolloClient";
-import { gql } from "@apollo/client";
+import useSWR from "swr";
 
-const WorldNews = ({ wdNews }) => {
+const fetcher = (url) => fetch(url).then((res) => res.json());
+
+
+const WorldNews = () => {
+  const { data, error } = useSWR("/api/worldnews", fetcher);
+  if (error)
+    return (
+      <div className="min-h-screen text-center text-red-600 flex justify-center items-center">
+        <h1 className="tracking-wider text-xl font-extrabold">
+          An Error Occurred, we are trying to resolve that
+        </h1>
+      </div>
+    );
+
+  if (!data)
+    return (
+      <div className="min-h-screen text-center text-white flex justify-center items-center">
+        <h1 className="tracking-wider text-xl font-extrabold">
+          There is no World news today
+        </h1>
+      </div>
+    );
+  if (!data.length)
+    return (
+      <div className="min-h-screen text-center text-white flex justify-center items-center">
+        <h1 className="tracking-wider text-xl font-extrabold">
+          There is no World news today
+        </h1>
+      </div>
+    );
   return (
     <>
       <Head>
         <title>World News, Newsful- Raw.Real.Unbiased</title>
-        <meta name="description" content="Bedhadak News website" />
+        <meta name="description" content="Newsful is the Indias first news aggregator website where you will find best news that are reliable, true, fearless, unbiased. We connects truly genuine journalist to you and keeps you away from fake news." />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       < section className="mt-5 mx-auto px-1 sm:p-5 min-h-screen">
@@ -56,28 +84,28 @@ const WorldNews = ({ wdNews }) => {
 
 export default WorldNews;
 
-export async function getStaticProps() {
-  const { data: wdNews } = await client.query({
-    query: gql`
-      query {
-        bedhadaknewsApi(where: { category: world }) {
-          title
-          publisherName
-          newsPageUrl
-          shortdescription
-          newsDate
-          featuredimage {
-            url
-          }
-        }
-      }
-    `,
-  });
+// export async function getStaticProps() {
+//   const { data: wdNews } = await client.query({
+//     query: gql`
+//       query {
+//         bedhadaknewsApi(where: { category: world }) {
+//           title
+//           publisherName
+//           newsPageUrl
+//           shortdescription
+//           newsDate
+//           featuredimage {
+//             url
+//           }
+//         }
+//       }
+//     `,
+//   });
 
-  return {
-    props: {
-      wdNews,
-    },
-    revalidate: 60
-  };
-}
+//   return {
+//     props: {
+//       wdNews,
+//     },
+//     revalidate: 60
+//   };
+// }

@@ -1,16 +1,28 @@
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
-import client from "../apolloClient";
-import { gql } from "@apollo/client";
 import NavBar from "./components/NavBar";
+import useSWR from "swr";
 
-export default function Home({ news }) {
+const fetcher = (url) => fetch(url).then((res) => res.json());
+
+export default function Home() {
+  const { data, error } = useSWR("/api/topnews", fetcher);
+  if (error) return "An error has occurred.";
+
+  if (!data)
+    return (
+      <>
+        <h1>Wait!!!!</h1>
+      </>
+    );
+  
+
   return (
     <div className="">
       <Head>
         <title>Newsful- Raw.Real.Unbiased</title>
-        <meta name="description" content="Bedhadak News website" />
+        <meta name="description" content="Newsful is the Indias first news aggregator website where you will find best news that are reliable, true, fearless, unbiased. We connects truly genuine journalist to you and keeps you away from fake news." />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className=" mx-auto px-1  sm:p-5 min-h-screen">
@@ -19,7 +31,7 @@ export default function Home({ news }) {
           Raw-Real-Unbiased
         </h1>
         <div className="sm:p-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-2 gap-y-4 ">
-          {news.bedhadaknewsApi.map((newsItem, index) => (
+          {data.map((newsItem, index) => (
             <div
               key={index}
               className="p-2 bg-white shadow-lg group rounded-lg border border-gray-200  mt-2 md:mt-5"
@@ -39,7 +51,7 @@ export default function Home({ news }) {
                       </time>
                     </div>
                   </article>
-                  <div className="my-auto">
+                  <div className="m-auto">
                     <Image
                       className="rounded"
                       src={newsItem.featuredimage.url}
@@ -59,28 +71,28 @@ export default function Home({ news }) {
   );
 }
 
-export async function getStaticProps() {
-  const { data: news } = await client.query({
-    query: gql`
-      query {
-        bedhadaknewsApi {
-          title
-          publisherName
-          newsPageUrl
-          shortdescription
-          newsDate
-          featuredimage {
-            url
-          }
-        }
-      }
-    `,
-  });
+// export async function getStaticProps() {
+//   const { data: news } = await client.query({
+//     query: gql`
+//       query {
+//         bedhadaknewsApi {
+//           title
+//           publisherName
+//           newsPageUrl
+//           shortdescription
+//           newsDate
+//           featuredimage {
+//             url
+//           }
+//         }
+//       }
+//     `,
+//   });
 
-  return {
-    props: {
-      news,
-    },
-    revalidate: 60
-  };
-}
+//   return {
+//     props: {
+//       news,
+//     },
+//     revalidate: 60
+//   };
+// }

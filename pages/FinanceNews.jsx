@@ -1,21 +1,48 @@
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
-import client from "../apolloClient";
-import { gql } from "@apollo/client";
+import useSWR from "swr";
 
-const Finance = ({ finNews }) => {
+const fetcher = (url) => fetch(url).then((res) => res.json());
+
+const Finance = () => {
+  const { data, error } = useSWR("/api/financenews", fetcher);
+  if (error)
+    return (
+      <div className="min-h-screen text-center text-red-600 flex justify-center items-center">
+        <h1 className="tracking-wider text-xl font-extrabold">
+          An Error Occurred, we are trying to resolve that
+        </h1>
+      </div>
+    );
+
+  if (!data)
+    return (
+      <div className="min-h-screen text-center text-white flex justify-center items-center">
+        <h1 className="tracking-wider text-xl font-extrabold">
+          There is no Finnce news today
+        </h1>
+      </div>
+    );
+  if (!data.length)
+    return (
+      <div className="min-h-screen text-center text-white flex justify-center items-center">
+        <h1 className="tracking-wider text-xl font-extrabold">
+          There is no Finnce news today
+        </h1>
+      </div>
+    );
   
   return (
     <>
     <Head>
         <title>Finance News, Newsful- Raw.Real.Unbiased</title>
-        <meta name="description" content="Bedhadak News website" />
+        <meta name="description" content="Newsful is the Indias first news aggregator website where you will find best news that are reliable, true, fearless, unbiased. We connects truly genuine journalist to you and keeps you away from fake news." />
         <link rel="icon" href="/favicon.ico" />
       </Head>
     < section className="mt-5 mx-auto px-1  sm:p-5 min-h-screen">
       <div>
-        {finNews.bedhadaknewsApi.map((newsItem, index) => (
+        {data.map((newsItem, index) => (
           <div
           key={index}
           className="p-2 bg-white shadow-lg group rounded-lg border border-gray-200  "
@@ -56,28 +83,28 @@ const Finance = ({ finNews }) => {
 
 export default Finance;
 
-export async function getStaticProps() {
-  const { data: finNews } = await client.query({
-    query: gql`
-      query {
-        bedhadaknewsApi(where: { category: finance }) {
-          title
-          publisherName
-          newsPageUrl
-          shortdescription
-          newsDate
-          featuredimage {
-            url
-          }
-        }
-      }
-    `,
-  });
+// export async function getStaticProps() {
+//   const { data: finNews } = await client.query({
+//     query: gql`
+//       query {
+//         bedhadaknewsApi(where: { category: finance }) {
+//           title
+//           publisherName
+//           newsPageUrl
+//           shortdescription
+//           newsDate
+//           featuredimage {
+//             url
+//           }
+//         }
+//       }
+//     `,
+//   });
 
-  return {
-    props: {
-      finNews,
-    },
-    revalidate: 60
-  };
-}
+//   return {
+//     props: {
+//       finNews,
+//     },
+//     revalidate: 60
+//   };
+// }
